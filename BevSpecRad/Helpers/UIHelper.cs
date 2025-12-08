@@ -2,10 +2,7 @@
 using Bev.Instruments.Thorlabs.FW;
 using BevSpecRad.Abstractions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BevSpecRad
 {
@@ -15,6 +12,13 @@ namespace BevSpecRad
         {
             Console.WriteLine(message);
             Console.ReadKey(true); // true = do not display the key pressed
+        }
+
+        public static bool SkipAction(string message)
+        {
+            Console.WriteLine($"Press any key to {message} - 's' to skip.");
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+            return keyInfo.Key == ConsoleKey.S;
         }
 
         public static void DisplaySpectrometerInfo(IArraySpectrometer spectro)
@@ -38,13 +42,25 @@ namespace BevSpecRad
 
         public static void DisplayShutterInfo(IShutter shutter)
         {
-            Console.WriteLine($"Shutter Name:             {shutter.Name}");
+            Console.WriteLine(FormatShutterInfo(shutter));
+        }
+
+        public static string FormatShutterInfo(IShutter shutter)
+        {
+            return $"Shutter Name:             {shutter.Name}";
         }
 
         public static void DisplayFilterWheelInfo(IFilterWheel filterWheel)
         {
-            Console.WriteLine($"Filter Wheel Name:        {filterWheel.Name}");
-            Console.WriteLine($"Number of Positions:      {filterWheel.FilterCount}");
+            Console.Write(FormatFilterWheelInfo(filterWheel));
+        }
+
+        public static string FormatFilterWheelInfo(IFilterWheel filterWheel)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"Filter Wheel Name:        {filterWheel.Name}");
+            sb.AppendLine($"Number of Positions:      {filterWheel.FilterCount}");
+            return sb.ToString();
         }
     }
 }

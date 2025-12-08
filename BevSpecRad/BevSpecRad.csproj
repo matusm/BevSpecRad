@@ -74,11 +74,15 @@
     <Compile Include="Domain\CctShutter.cs" />
     <Compile Include="Domain\ManualShutter.cs" />
     <Compile Include="Domain\NullShutter.cs" />
+    <Compile Include="EventLogger.cs" />
+    <Compile Include="Helpers\ConsoleProgessBar.cs" />
+    <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\MakeFullMeasurement.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgramMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UIHelper.cs" />
+    <Compile Include="Helpers\UIHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

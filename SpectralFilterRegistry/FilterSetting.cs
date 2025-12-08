@@ -9,7 +9,7 @@
 
         public override string ToString()
         {
-            return $"{Name}: {Description} (Cutoff: {CutoffLow}nm - {CutoffHigh}nm)";
+            return $"{Name}: {Description} (Cut-off: {CutoffLow}nm - {CutoffHigh}nm)";
         }
     }
 }

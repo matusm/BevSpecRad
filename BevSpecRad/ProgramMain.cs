@@ -3,6 +3,7 @@ using CommandLine.Text;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 
 namespace BevSpecRad
 {
@@ -31,6 +32,28 @@ namespace BevSpecRad
                 return HelpText.DefaultParsingErrorsHandler(result, h);
             }, e => e);
             Console.WriteLine(helpText);
+        }
+
+        private static void LogSetupInfo()
+        {
+            eventLogger.WriteLine("=== Instrument Information ===");
+            eventLogger.Write(UIHelper.FormatSpectrometerInfo(spectro));
+            eventLogger.WriteLine(UIHelper.FormatShutterInfo(shutter));
+            eventLogger.Write(UIHelper.FormatFilterWheelInfo(filterWheel));
+            eventLogger.WriteLine("=== Filter Registry ===");
+            for (int i = 1; i <= filterRegistry.Count; i++)
+            {
+                var filter = filterRegistry.GetFilter(i);
+                eventLogger.WriteLine($"{i}: {filter.ToString()}");
+            }
+            eventLogger.WriteLine("==============================");
+        }
+
+        private static void DisplaySetupInfo()
+        {
+            Console.WriteLine(UIHelper.FormatSpectrometerInfo(spectro));
+            Console.WriteLine(UIHelper.FormatShutterInfo(shutter));
+            Console.WriteLine(UIHelper.FormatFilterWheelInfo(filterWheel));
         }
 
     }
