@@ -12,7 +12,7 @@ namespace BevSpecRad
             MeasuredOpticalSpectrum signal = new MeasuredOpticalSpectrum(spectro.Wavelengths);
             MeasuredOpticalSpectrum dark = new MeasuredOpticalSpectrum(spectro.Wavelengths);
             spectro.SetIntegrationTime(integrationTime);
-            Console.WriteLine($"\nABBA sequence with ({filterRegistry.GetFilter(filterIdx).Name})");
+            Console.WriteLine($"\nABBA sequence with filter index {filterIdx}");
             filterWheel.GoToPosition(filterIdx);
 
             // first A of ABBA Measurement Sequence
