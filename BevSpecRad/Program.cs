@@ -171,9 +171,7 @@ namespace BevSpecRad
             var maskedRatioD = ratioD.ApplyBandpassMask(658, 2000, 10, 10);
 
             // Sum all masked ratio spectra
-            var temp1 = SpecMath.Add(maskedRatioA, maskedRatioB);
-            var temp2 = SpecMath.Add(maskedRatioC, maskedRatioD);
-            var result = SpecMath.Add(temp1, temp2);
+            var result = SpecMath.Add(maskedRatioA, maskedRatioB, maskedRatioC, maskedRatioD);
 
             var resampledResult = result.ResampleSpectrum(340, 900, 1);
 
