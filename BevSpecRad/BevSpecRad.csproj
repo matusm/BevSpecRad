@@ -89,11 +89,5 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SpectralFilterRegistry\SpectralFilterRegistry.csproj">
-      <Project>{9279442E-463C-4B38-A5DC-6548FD024757}</Project>
-      <Name>SpectralFilterRegistry</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

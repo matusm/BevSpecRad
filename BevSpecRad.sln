@@ -5,8 +5,6 @@ VisualStudioVersion = 17.14.36717.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BevSpecRad", "BevSpecRad\BevSpecRad.csproj", "{ECDCB478-74CF-4768-A787-EED0D0990075}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectralFilterRegistry", "SpectralFilterRegistry\SpectralFilterRegistry.csproj", "{9279442E-463C-4B38-A5DC-6548FD024757}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{ECDCB478-74CF-4768-A787-EED0D0990075}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECDCB478-74CF-4768-A787-EED0D0990075}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECDCB478-74CF-4768-A787-EED0D0990075}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9279442E-463C-4B38-A5DC-6548FD024757}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9279442E-463C-4B38-A5DC-6548FD024757}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9279442E-463C-4B38-A5DC-6548FD024757}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9279442E-463C-4B38-A5DC-6548FD024757}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
