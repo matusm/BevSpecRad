@@ -30,6 +30,15 @@ namespace BevSpecRad.Domain
 
         public void Open()
         {
+            int _temp = _filterWheel.GetPosition();
+            if (_temp == _blockPos)
+            {
+                _filterWheel.GoToPosition(_openPos);
+            }
+            else
+            {
+                _openPos = _temp;
+            }
             _filterWheel.GoToPosition(_openPos);
         }
     }

@@ -6,6 +6,7 @@ using BevSpecRad.Domain;
 using BevSpecRad.Helpers;
 using At.Matus.OpticalSpectrumLib;
 using System;
+using Bev.Instruments.Thorlabs.Ccs;
 
 namespace BevSpecRad
 {
@@ -21,7 +22,7 @@ namespace BevSpecRad
 
     public partial class Program
     {
-        private static IArraySpectrometer spectro;
+        private static ThorlabsCcs spectro;
         private static IShutter shutter;
         private static IFilterWheel filterWheel;
         private static EventLogger eventLogger;
@@ -31,10 +32,12 @@ namespace BevSpecRad
         {
             // instantiate instruments and logger
             eventLogger = new EventLogger(options.BasePath);
+            spectro = new ThorlabsCcs(ProductID.CCS100, "M00928408");
+            //spectro = new ThorlabsCct();
             filterWheel = new MotorFilterWheel("COM1");
             //shutter = new CctShutter((ThorlabsCct)spectro);
             shutter = new FilterWheelShutter(filterWheel, (int)FilterPosition.Closed);
-            spectro = new ThorlabsCct();
+
 
             // TODO: read calibration data from file for standard lamp
 
@@ -84,23 +87,23 @@ namespace BevSpecRad
             else
             {
                 filterWheel.GoToPosition((int)FilterPosition.FilterA);
-                intTimeA = ((ThorlabsCct)spectro).GetOptimalExposureTime();
+                intTimeA = ((ThorlabsCcs)spectro).GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter A: {intTimeA} s");
                 Console.WriteLine($"Optimal integration time for filter A: {intTimeA} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterB);
-                intTimeB = ((ThorlabsCct)spectro).GetOptimalExposureTime();
+                intTimeB = ((ThorlabsCcs)spectro).GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter B: {intTimeB} s");
                 Console.WriteLine($"Optimal integration time for filter B: {intTimeB} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterC);
-                intTimeC = ((ThorlabsCct)spectro).GetOptimalExposureTime();
+                intTimeC = ((ThorlabsCcs)spectro).GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter C: {intTimeC} s");
                 Console.WriteLine($"Optimal integration time for filter C: {intTimeC} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterD);
-                intTimeD = ((ThorlabsCct)spectro).GetOptimalExposureTime();
+                intTimeD = ((ThorlabsCcs)spectro).GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter D: {intTimeD} s");
                 Console.WriteLine($"Optimal integration time for filter D: {intTimeD} s");
                 filterWheel.GoToPosition((int)FilterPosition.Blank);
-                intTime0 = ((ThorlabsCct)spectro).GetOptimalExposureTime();
+                intTime0 = ((ThorlabsCcs)spectro).GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for blank filter: {intTime0} s");
                 Console.WriteLine($"Optimal integration time for blank filter: {intTime0} s");
             }
