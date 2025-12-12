@@ -170,6 +170,19 @@ namespace BevSpecRad
             specControlC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecC.csv");
             specControlD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecD.csv");
             specControl0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpec0.csv");
+
+            var statControlA = specControlA.GetStatistic();
+            var statControlB = specControlB.GetStatistic();
+            var statControlC = specControlC.GetStatistic();
+            var statControlD = specControlD.GetStatistic();
+            var statControl0 = specControl0.GetStatistic();
+
+            eventLogger.LogEvent($"Control Spectrum Stats Filter A: {statControlA.AverageValue:F6} +- {statControlA.StandardDeviation:F6}");
+            eventLogger.LogEvent($"Control Spectrum Stats Filter B: {statControlB.AverageValue:F6} +- {statControlB.StandardDeviation:F6}");
+            eventLogger.LogEvent($"Control Spectrum Stats Filter C: {statControlC.AverageValue:F6} +- {statControlC.StandardDeviation:F6}");
+            eventLogger.LogEvent($"Control Spectrum Stats Filter D: {statControlD.AverageValue:F6} +- {statControlD.StandardDeviation:F6}");
+            eventLogger.LogEvent($"Control Spectrum Stats Filter 0: {statControl0.AverageValue:F6} +- {statControl0.StandardDeviation:F6}");
+
             #endregion
 
             #region Calculate some stuff 
