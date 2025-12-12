@@ -33,7 +33,8 @@ namespace BevSpecRad
         {
             // instantiate instruments and logger
             eventLogger = new EventLogger(options.BasePath);
-            filterWheel = new MotorFilterWheel("COM1");
+            filterWheel = new NullFilterWheel();
+            //filterWheel = new MotorFilterWheel("COM1");
             switch (options.SpecType)
             {
                 case 1:
@@ -155,14 +156,14 @@ namespace BevSpecRad
 
             #endregion
 
-            #region Control Spectra
+            #region Take Control Spectra
             // Now take control spectra (dark spectra) for all integration times
             Console.WriteLine("\nMeasurements on lamps done. Lamp can be shut down. Taking control (dark) spectra.");
-            specControlA = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeA, options.Nsamples);
-            specControlB = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeB, options.Nsamples);
-            specControlC = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeC, options.Nsamples);
-            specControlD = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeD, options.Nsamples);
-            specControl0 = PerformABBAMeasurement((int)FilterPosition.Closed, intTime0, options.Nsamples);
+            specControlA = PerformABBAControlMeasurement(intTimeA, options.Nsamples);
+            specControlB = PerformABBAControlMeasurement(intTimeB, options.Nsamples);
+            specControlC = PerformABBAControlMeasurement(intTimeC, options.Nsamples);
+            specControlD = PerformABBAControlMeasurement(intTimeD, options.Nsamples);
+            specControl0 = PerformABBAControlMeasurement(intTime0, options.Nsamples);
 
             specControlA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecA.csv");
             specControlB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecB.csv");

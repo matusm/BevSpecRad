@@ -33,6 +33,28 @@ namespace BevSpecRad
             return correctedSignal;
         }
 
+        internal static IOpticalSpectrum PerformABBAControlMeasurement(double integrationTime, int nSamples)
+        {
+            eventLogger.LogEvent($"Starting ABBA control measurement with integration time {integrationTime}s, {nSamples} samples per measurement.");
+            MeasuredOpticalSpectrum signal = new MeasuredOpticalSpectrum(spectro.Wavelengths);
+            MeasuredOpticalSpectrum dark = new MeasuredOpticalSpectrum(spectro.Wavelengths);
+            spectro.SetIntegrationTime(integrationTime);
+            Console.WriteLine($"\nABBA sequence with closed shutter");
+            shutter.Close();
+            // first A of ABBA Measurement Sequence
+            OnCallUpdateSpectrum(signal, nSamples, "first A of ABBA");
+            // first B of ABBA Measurement Sequence
+            OnCallUpdateSpectrum(dark, nSamples, "first B of ABBA");
+            // second B of ABBA Measurement Sequence
+            OnCallUpdateSpectrum(dark, nSamples, "second B of ABBA");
+            // second A of ABBA Measurement Sequence
+            OnCallUpdateSpectrum(signal, nSamples, "second A of ABBA");
+            shutter.Open();
+            OpticalSpectrum correctedSignal = SpecMath.Subtract(signal, dark);
+            // TODO: update metadata of correctedSignal to indicate ABBA correction
+            return correctedSignal;
+        }
+
         internal static void OnCallUpdateSpectrum(MeasuredOpticalSpectrum spectrum, int numberSamples, string message)
         {
             Console.WriteLine($"Measurement of {message}...");

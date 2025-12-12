@@ -1,4 +1,5 @@
 ﻿using At.Matus.OpticalSpectrumLib;
+using At.Matus.StatisticPod;
 using System.IO;
 
 namespace BevSpecRad.Helpers
@@ -15,6 +16,16 @@ namespace BevSpecRad.Helpers
                 csvFile.WriteLine(item.ToCsvLine());
             }
             csvFile.Close();
+        }
+
+        public static StatisticPod GetStatistic(this IOpticalSpectrum spectrum)
+        {
+            var statisticPod = new StatisticPod();
+            foreach (ISpectralPoint point in spectrum.DataPoints)
+            {
+                statisticPod.Update(point.Signal);
+            }
+            return statisticPod;
         }
 
     }
