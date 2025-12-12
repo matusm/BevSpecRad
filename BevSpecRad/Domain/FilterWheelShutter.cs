@@ -31,6 +31,10 @@ namespace BevSpecRad.Domain
 
         public void Open()
         {
+            if (_isOpen)
+            {
+                _openPos = _filterWheel.GetPosition();
+            }
             _filterWheel.GoToPosition(_openPos);
             _isOpen = true;
         }
