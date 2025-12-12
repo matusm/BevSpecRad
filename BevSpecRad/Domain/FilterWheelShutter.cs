@@ -6,8 +6,9 @@ namespace BevSpecRad.Domain
     public class FilterWheelShutter : IShutter
     {
         private IFilterWheel _filterWheel;
-        private int _blockPos;
+        private readonly int _blockPos;
         private int _openPos;
+        private bool _isOpen = true;
 
         public FilterWheelShutter(IFilterWheel filterWheel, int blockPos)
         {
@@ -20,26 +21,18 @@ namespace BevSpecRad.Domain
 
         public void Close()
         {
-            int _temp = _filterWheel.GetPosition();
-            if(_temp != _blockPos)
+            if (_isOpen)
             {
-                _openPos = _temp;
+                _openPos = _filterWheel.GetPosition();
             }
             _filterWheel.GoToPosition(_blockPos);
+            _isOpen = false;
         }
 
         public void Open()
         {
-            int _temp = _filterWheel.GetPosition();
-            if (_temp == _blockPos)
-            {
-                _filterWheel.GoToPosition(_openPos);
-            }
-            else
-            {
-                _openPos = _temp;
-            }
             _filterWheel.GoToPosition(_openPos);
+            _isOpen = true;
         }
     }
 }

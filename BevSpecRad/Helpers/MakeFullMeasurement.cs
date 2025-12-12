@@ -17,16 +17,16 @@ namespace BevSpecRad
 
             // first A of ABBA Measurement Sequence
             shutter.Open();
-            OnCallUpdateSpectrum(signal, nSamples, "A1 of ABBA");
+            OnCallUpdateSpectrum(signal, nSamples, "first A of ABBA");
             // first B of ABBA Measurement Sequence
             shutter.Close();
-            OnCallUpdateSpectrum(dark, nSamples, "B1 of ABBA");
+            OnCallUpdateSpectrum(dark, nSamples, "first B of ABBA");
             // second B of ABBA Measurement Sequence
             shutter.Close();
-            OnCallUpdateSpectrum(dark, nSamples, "B2 of ABBA");
+            OnCallUpdateSpectrum(dark, nSamples, "second B of ABBA");
             // second A of ABBA Measurement Sequence
             shutter.Open();
-            OnCallUpdateSpectrum(signal, nSamples, "A2 of ABBA");
+            OnCallUpdateSpectrum(signal, nSamples, "second A of ABBA");
 
             OpticalSpectrum correctedSignal = SpecMath.Subtract(signal, dark);
             // TODO: update metadata of correctedSignal to indicate ABBA correction

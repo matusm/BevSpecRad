@@ -4,7 +4,7 @@ namespace BevSpecRad
 {
     internal class Options
     {
-        [Option('n', "number", Default = 40, Required = false, HelpText = "Number of spectra per acquisition.")]
+        [Option('n', "number", Default = 10, Required = false, HelpText = "Number of spectra per acquisition.")]
         public int Nsamples { get; set; }
 
         [Option('t', "inttime", Default = 0.001, Required = false, HelpText = "Integration time in seconds.")]

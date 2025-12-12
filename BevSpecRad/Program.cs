@@ -7,6 +7,7 @@ using BevSpecRad.Helpers;
 using At.Matus.OpticalSpectrumLib;
 using System;
 using Bev.Instruments.Thorlabs.Ccs;
+using Bev.Instruments.ArraySpectrometer.Domain;
 
 namespace BevSpecRad
 {
@@ -22,7 +23,7 @@ namespace BevSpecRad
 
     public partial class Program
     {
-        private static ThorlabsCcs spectro;
+        private static IArraySpectrometer spectro;
         private static IShutter shutter;
         private static IFilterWheel filterWheel;
         private static EventLogger eventLogger;
@@ -38,11 +39,11 @@ namespace BevSpecRad
             //shutter = new CctShutter((ThorlabsCct)spectro);
             shutter = new FilterWheelShutter(filterWheel, (int)FilterPosition.Closed);
 
-
             // TODO: read calibration data from file for standard lamp
 
             LogSetupInfo();
             DisplaySetupInfo();
+
             // ask user to set up everything
             filterWheel.GoToPosition(5); // Ensuring filter wheel is at position 5 also for manual filterwheels
             UIHelper.WriteMessageAndWait("==============================================================\nPlease set up the STANDARD LAMP and press any key to continue.\n==============================================================\n");
@@ -87,23 +88,23 @@ namespace BevSpecRad
             else
             {
                 filterWheel.GoToPosition((int)FilterPosition.FilterA);
-                intTimeA = ((ThorlabsCcs)spectro).GetOptimalExposureTime();
+                intTimeA = spectro.GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter A: {intTimeA} s");
                 Console.WriteLine($"Optimal integration time for filter A: {intTimeA} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterB);
-                intTimeB = ((ThorlabsCcs)spectro).GetOptimalExposureTime();
+                intTimeB = spectro.GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter B: {intTimeB} s");
                 Console.WriteLine($"Optimal integration time for filter B: {intTimeB} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterC);
-                intTimeC = ((ThorlabsCcs)spectro).GetOptimalExposureTime();
+                intTimeC = spectro.GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter C: {intTimeC} s");
                 Console.WriteLine($"Optimal integration time for filter C: {intTimeC} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterD);
-                intTimeD = ((ThorlabsCcs)spectro).GetOptimalExposureTime();
+                intTimeD = spectro.GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter D: {intTimeD} s");
                 Console.WriteLine($"Optimal integration time for filter D: {intTimeD} s");
                 filterWheel.GoToPosition((int)FilterPosition.Blank);
-                intTime0 = ((ThorlabsCcs)spectro).GetOptimalExposureTime();
+                intTime0 = spectro.GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for blank filter: {intTime0} s");
                 Console.WriteLine($"Optimal integration time for blank filter: {intTime0} s");
             }
@@ -143,18 +144,18 @@ namespace BevSpecRad
 
             #region Control Spectra
             // Now take control spectra (dark spectra) for all integration times
-            Console.WriteLine("\nMeasurements on lamps done. Lamp can be shut down. Taking control (dark) spectra.");
-            specControlA = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeA, options.Nsamples);
-            specControlB = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeB, options.Nsamples);
-            specControlC = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeC, options.Nsamples);
-            specControlD = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeD, options.Nsamples);
-            specControl0 = PerformABBAMeasurement((int)FilterPosition.Closed, intTime0, options.Nsamples);
+            //Console.WriteLine("\nMeasurements on lamps done. Lamp can be shut down. Taking control (dark) spectra.");
+            //specControlA = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeA, options.Nsamples);
+            //specControlB = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeB, options.Nsamples);
+            //specControlC = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeC, options.Nsamples);
+            //specControlD = PerformABBAMeasurement((int)FilterPosition.Closed, intTimeD, options.Nsamples);
+            //specControl0 = PerformABBAMeasurement((int)FilterPosition.Closed, intTime0, options.Nsamples);
 
-            specControlA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecA.csv");
-            specControlB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecB.csv");
-            specControlC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecC.csv");
-            specControlD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecD.csv");
-            specControl0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpec0.csv");
+            //specControlA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecA.csv");
+            //specControlB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecB.csv");
+            //specControlC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecC.csv");
+            //specControlD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecD.csv");
+            //specControl0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpec0.csv");
             #endregion
 
             #region Calculate some stuff 
@@ -176,7 +177,7 @@ namespace BevSpecRad
             // Sum all masked ratio spectra
             var result = SpecMath.Add(maskedRatioA, maskedRatioB, maskedRatioC, maskedRatioD);
 
-            var resampledResult = result.ResampleSpectrum(340, 900, 1);
+            var resampledResult = result.ResampleSpectrum(350, 700, 1);
 
             ratioA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ratioA.csv");
             ratioB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ratioB.csv");
