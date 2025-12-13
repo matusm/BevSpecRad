@@ -4,7 +4,7 @@ namespace BevSpecRad
 {
     internal class Options
     {
-        [Option('n', "number", Default = 4, Required = false, HelpText = "Number of spectra per acquisition.")]
+        [Option('n', "number", Default = 10, Required = false, HelpText = "Number of spectra per acquisition.")]
         public int Nsamples { get; set; }
 
         [Option('t', "inttime", Default = 0.001, Required = false, HelpText = "Integration time in seconds.")]
@@ -13,8 +13,14 @@ namespace BevSpecRad
         [Option("comment", Default = "---", Required = false, HelpText = "User supplied comment text.")]
         public string UserComment { get; set; }
 
+        [Option("fwport", Default = "COM1", Required = false, HelpText = "Filter wheel serial port.")]
+        public string FwPort { get; set; }
+
         [Option("basepath", Default = @"C:\temp\BevSpecRad", Required = false, HelpText = "Base path for result directories.")]
         public string BasePath { get; set; }
+
+        [Option("logfile", Default = @"BevSpecRadLog.txt", Required = false, HelpText = "File name for logging.")]
+        public string LogFileName { get; set; }
 
         [Option('s', "spectrometer", Default = 1, Required = false, HelpText = "Spectrometer type (see doc for usage).")]
         public int SpecType { get; set; }

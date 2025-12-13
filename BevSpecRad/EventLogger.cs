@@ -6,11 +6,10 @@ namespace BevSpecRad
     public class EventLogger
     {
         private StreamWriter logFile;
-        private const string logFileName = "BevSpecRadLog.txt";
         
         public string LogDirectory { get; }
 
-        public EventLogger(string baseDirectory)
+        public EventLogger(string baseDirectory, string logFileName)
         {
             LogDirectory = CreateTimestampedSubdirectory(baseDirectory);
             logFile = new StreamWriter(Path.Combine(LogDirectory, logFileName));

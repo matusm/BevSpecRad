@@ -31,17 +31,18 @@ namespace BevSpecRad
         // Run() is the new Main() after parsing command-line arguments
         private static void Run(Options options)
         {
+
             // instantiate instruments and logger
-            eventLogger = new EventLogger(options.BasePath);
+            eventLogger = new EventLogger(options.BasePath, options.LogFileName);
             filterWheel = new NullFilterWheel();
-            //filterWheel = new MotorFilterWheel("COM1");
+            //filterWheel = new MotorFilterWheel(options.FwPort);
             switch (options.SpecType)
             {
-                case 1:
+                case 1: // CCT
                     spectro = new ThorlabsCct();
                     shutter = new CctShutter((ThorlabsCct)spectro);
                     break;
-                case 2:
+                case 2: // CCS
                     spectro = new ThorlabsCcs(ProductID.CCS100, "M00928408");
                     shutter = new FilterWheelShutter(filterWheel, (int)FilterPosition.Closed);
                     break;
@@ -49,18 +50,26 @@ namespace BevSpecRad
                     break;
             }
 
-            // TODO: read calibration data from file for standard lamp
-
+            eventLogger.LogEvent($"User comment: {options.UserComment}");
             LogSetupInfo();
             DisplaySetupInfo();
+
+            // TODO: read calibration data from file for standard lamp
+            string fileName = "SN7-1108_FEL1000_2022.csv";
+            var standardLampSpectrum = SpectralReader.ReadSpectrumFromCsv(System.IO.Path.Combine(options.BasePath, fileName));
+            eventLogger.LogEvent($"Standard lamp calibration spectrum read from file: {fileName} ({standardLampSpectrum.GetMinimumWavelength()} nm - {standardLampSpectrum.GetMaximumWavelength()} nm)");
+            Console.WriteLine($"Standard lamp calibration spectrum read from file: {fileName} ({standardLampSpectrum.GetMinimumWavelength()} nm - {standardLampSpectrum.GetMaximumWavelength()} nm)");
 
             // ask user to set up everything
             Console.WriteLine("Testing shutter and filter wheel");
             filterWheel.GoToPosition((int)FilterPosition.Blank); // Ensuring filter wheel is at position 5 also for manual filterwheels
             shutter.Close();
             shutter.Open();
+            Console.WriteLine();
 
-            UIHelper.WriteMessageAndWait("==============================================================\nPlease set up the STANDARD LAMP and press any key to continue.\n==============================================================\n");
+            UIHelper.WriteMessageAndWait("==============================================================\n" +
+                "Please set up the STANDARD LAMP and press any key to continue.\n" +
+                "==============================================================\n");
 
             #region Define all datafields
             // integration times for each filter
@@ -132,15 +141,17 @@ namespace BevSpecRad
             specStdD = PerformABBAMeasurement((int)FilterPosition.FilterD, intTimeD, options.Nsamples);
             specStd0 = PerformABBAMeasurement((int)FilterPosition.Blank, intTime0, options.Nsamples);
 
-            specStdA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "RawSpecStdA.csv");
-            specStdB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "RawSpecStdB.csv");
-            specStdC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "RawSpecStdC.csv");
-            specStdD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "RawSpecStdD.csv");
-            specStd0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "RawSpecStd0.csv");
+            specStdA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "1_RawSpecStdA.csv");
+            specStdB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "1_RawSpecStdB.csv");
+            specStdC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "1_RawSpecStdC.csv");
+            specStdD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "1_RawSpecStdD.csv");
+            specStd0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "1_RawSpecStd0.csv");
             #endregion
 
             #region Measure DUT Lamp
-            UIHelper.WriteMessageAndWait("\n==============================================================\nPlease set up the DUT LAMP and press any key to continue.\n==============================================================");
+            UIHelper.WriteMessageAndWait("\n==============================================================\n" +
+                "Please set up the DUT LAMP and press any key to continue.\n" +
+                "==============================================================");
 
             specDutA = PerformABBAMeasurement((int)FilterPosition.FilterA, intTimeA, options.Nsamples);
             specDutB = PerformABBAMeasurement((int)FilterPosition.FilterB, intTimeB, options.Nsamples);
@@ -148,11 +159,11 @@ namespace BevSpecRad
             specDutD = PerformABBAMeasurement((int)FilterPosition.FilterD, intTimeD, options.Nsamples);
             specDut0 = PerformABBAMeasurement((int)FilterPosition.Blank, intTime0, options.Nsamples);
 
-            specDutA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "RawSpecDutA.csv");
-            specDutB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "RawSpecDutB.csv");
-            specDutC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "RawSpecDutC.csv");
-            specDutD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "RawSpecDutD.csv");
-            specDut0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "RawSpecDut0.csv");
+            specDutA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "2_RawSpecDutA.csv");
+            specDutB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "2_RawSpecDutB.csv");
+            specDutC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "2_RawSpecDutC.csv");
+            specDutD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "2_RawSpecDutD.csv");
+            specDut0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "2_RawSpecDut0.csv");
 
             #endregion
 
@@ -165,17 +176,17 @@ namespace BevSpecRad
             specControlD = PerformABBAControlMeasurement(intTimeD, options.Nsamples);
             specControl0 = PerformABBAControlMeasurement(intTime0, options.Nsamples);
 
-            specControlA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecA.csv");
-            specControlB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecB.csv");
-            specControlC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecC.csv");
-            specControlD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpecD.csv");
-            specControl0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ControlSpec0.csv");
+            specControlA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecA.csv");
+            specControlB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecB.csv");
+            specControlC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecC.csv");
+            specControlD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecD.csv");
+            specControl0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpec0.csv");
 
-            var statControlA = specControlA.GetStatistic();
-            var statControlB = specControlB.GetStatistic();
-            var statControlC = specControlC.GetStatistic();
-            var statControlD = specControlD.GetStatistic();
-            var statControl0 = specControl0.GetStatistic();
+            var statControlA = specControlA.GetSignalStatistics();
+            var statControlB = specControlB.GetSignalStatistics();
+            var statControlC = specControlC.GetSignalStatistics();
+            var statControlD = specControlD.GetSignalStatistics();
+            var statControl0 = specControl0.GetSignalStatistics();
 
             eventLogger.LogEvent($"Control Spectrum Stats Filter A: {statControlA.AverageValue:F6} +- {statControlA.StandardDeviation:F6}");
             eventLogger.LogEvent($"Control Spectrum Stats Filter B: {statControlB.AverageValue:F6} +- {statControlB.StandardDeviation:F6}");
@@ -193,11 +204,11 @@ namespace BevSpecRad
             var ratioD = SpecMath.Ratio(specDutD, specStdD);
             var ratio0 = SpecMath.Ratio(specDut0, specStd0);
 
-            ratioA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ratioA.csv");
-            ratioB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ratioB.csv");
-            ratioC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ratioC.csv");
-            ratioD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ratioD.csv");
-            ratio0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "ratio0.csv");
+            ratioA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "4_ratioA.csv");
+            ratioB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "4_ratioB.csv");
+            ratioC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "4_ratioC.csv");
+            ratioD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "4_ratioD.csv");
+            ratio0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "4_ratio0.csv");
 
             // Apply bandpass masks to each ratio spectrum
             // the cut-off wavelengths are determined using actual spectra
@@ -207,19 +218,23 @@ namespace BevSpecRad
             var maskedRatioC = ratioC.ApplyBandpassMask(545, 658, 10, 10);
             var maskedRatioD = ratioD.ApplyBandpassMask(658, 2000, 10, 10);
 
-            maskedRatioA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "maskedRatioA.csv");
-            maskedRatioB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "maskedRatioB.csv");
-            maskedRatioC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "maskedRatioC.csv");
-            maskedRatioD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "maskedRatioD.csv");
+            maskedRatioA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "4_maskedRatioA.csv");
+            maskedRatioB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "4_maskedRatioB.csv");
+            maskedRatioC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "4_maskedRatioC.csv");
+            maskedRatioD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "4_maskedRatioD.csv");
 
             // Sum all masked ratio spectra
             var correctedLampRatio = SpecMath.Add(maskedRatioA, maskedRatioB, maskedRatioC, maskedRatioD);
-            correctedLampRatio.SaveSpectrumAsCsv(eventLogger.LogDirectory, "correctedLampRatio.csv");
+            correctedLampRatio.SaveSpectrumAsCsv(eventLogger.LogDirectory, "5_correctedLampRatio.csv");
 
             var correctedLampRatioResampled = correctedLampRatio.ResampleSpectrum(350, 700, 1);
             var simpleLampRatioResampled = ratio0.ResampleSpectrum(350, 700, 1);
-            correctedLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "correctedLampRatio_resampled.csv");
-            simpleLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "simpleLampRatio_resampled.csv");
+            var standardLampResampled = standardLampSpectrum.ResampleSpectrum(350, 700, 1);
+            var calibratedSpectrumCorrected = SpecMath.Multiply(correctedLampRatioResampled, standardLampResampled);
+            correctedLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "5_correctedLampRatio_resampled.csv");
+            simpleLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "5_simpleLampRatio_resampled.csv");
+            calibratedSpectrumCorrected.SaveSpectrumAsCsv(eventLogger.LogDirectory, "5_calibratedSpectrum_corrected.csv");
+            standardLampResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_standardLamp_resampled.csv");
             #endregion
 
             Console.WriteLine();

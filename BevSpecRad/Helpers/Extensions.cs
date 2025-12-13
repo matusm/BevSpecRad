@@ -18,14 +18,5 @@ namespace BevSpecRad.Helpers
             csvFile.Close();
         }
 
-        public static StatisticPod GetStatistic(this IOpticalSpectrum spectrum)
-        {
-            var statisticPod = new StatisticPod();
-            foreach (ISpectralPoint point in spectrum.DataPoints)
-            {
-                statisticPod.Update(point.Signal);
-            }
-            return statisticPod;
-        }
     }
 }
