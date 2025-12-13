@@ -83,6 +83,7 @@
     <Compile Include="Helpers\ConsoleProgessBar.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\MakeFullMeasurement.cs" />
+    <Compile Include="Helpers\SpectralReader.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgramMain.cs" />

@@ -27,6 +27,5 @@ namespace BevSpecRad.Helpers
             }
             return statisticPod;
         }
-
     }
 }
