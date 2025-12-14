@@ -20,22 +20,28 @@ namespace BevSpecRad
         public void Write(string message)
         {
             logFile.Write(message);
+            Console.Write(message);
         }
 
+        /// Logs an event with a timestamp to both the log file and the console (without timestamp).
         public void LogEvent(string message)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             logFile.WriteLine($"[{timestamp}] {message}");
+            Console.WriteLine($"{message}");
         }
 
+        /// Writes a message to both the log file and the console without a timestamp.
         public void WriteLine(string message)
         {
             logFile.WriteLine(message);
+            Console.WriteLine(message);
         }
 
         public void WriteLine()
         {
             logFile.WriteLine();
+            Console.WriteLine();
         }
 
         public void Close()

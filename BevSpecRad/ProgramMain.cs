@@ -33,6 +33,13 @@ namespace BevSpecRad
             Console.WriteLine(helpText);
         }
 
+        private static string GetAppNameAndVersion()
+        {
+            string appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+            string appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            return $"{appName} v{appVersion}";
+        }
+
         private static void LogSetupInfo()
         {
             eventLogger.WriteLine("=== Instrument Information ===");
@@ -40,13 +47,6 @@ namespace BevSpecRad
             eventLogger.WriteLine(UIHelper.FormatShutterInfo(shutter));
             eventLogger.Write(UIHelper.FormatFilterWheelInfo(filterWheel));
             eventLogger.WriteLine("==============================");
-        }
-
-        private static void DisplaySetupInfo()
-        {
-            Console.WriteLine(UIHelper.FormatSpectrometerInfo(spectro));
-            Console.WriteLine(UIHelper.FormatShutterInfo(shutter));
-            Console.WriteLine(UIHelper.FormatFilterWheelInfo(filterWheel));
         }
 
     }

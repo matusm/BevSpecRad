@@ -8,12 +8,12 @@ namespace BevSpecRad
     {
         internal static IOpticalSpectrum PerformABBAMeasurement(int filterIdx, double integrationTime, int nSamples)
         {
-            eventLogger.LogEvent($"Starting ABBA measurement with filter index {filterIdx}, integration time {integrationTime}s, {nSamples} samples per measurement.");
+            Console.WriteLine();
+            spectro.SetIntegrationTime(integrationTime);
+            filterWheel.GoToPosition(filterIdx);
+            eventLogger.LogEvent($"ABBA sequence, filter index {filterIdx}, integration time {spectro.GetIntegrationTime()} s, {nSamples} samples.");
             MeasuredOpticalSpectrum signal = new MeasuredOpticalSpectrum(spectro.Wavelengths);
             MeasuredOpticalSpectrum dark = new MeasuredOpticalSpectrum(spectro.Wavelengths);
-            spectro.SetIntegrationTime(integrationTime);
-            Console.WriteLine($"\nABBA sequence with filter index {filterIdx}");
-            filterWheel.GoToPosition(filterIdx);
 
             // first A of ABBA Measurement Sequence
             shutter.Open();
@@ -35,11 +35,12 @@ namespace BevSpecRad
 
         internal static IOpticalSpectrum PerformABBAControlMeasurement(double integrationTime, int nSamples)
         {
-            eventLogger.LogEvent($"Starting ABBA control measurement with integration time {integrationTime}s, {nSamples} samples per measurement.");
+            Console.WriteLine();
+            spectro.SetIntegrationTime(integrationTime);
+            eventLogger.LogEvent($"ABBA sequence, control with closed shutter, integration time {spectro.GetIntegrationTime()} s, {nSamples} samples.");
             MeasuredOpticalSpectrum signal = new MeasuredOpticalSpectrum(spectro.Wavelengths);
             MeasuredOpticalSpectrum dark = new MeasuredOpticalSpectrum(spectro.Wavelengths);
-            spectro.SetIntegrationTime(integrationTime);
-            Console.WriteLine($"\nABBA sequence with closed shutter");
+
             shutter.Close();
             // first A of ABBA Measurement Sequence
             OnCallUpdateSpectrum(signal, nSamples, "first A of ABBA");

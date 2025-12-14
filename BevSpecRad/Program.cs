@@ -31,7 +31,6 @@ namespace BevSpecRad
         // Run() is the new Main() after parsing command-line arguments
         private static void Run(Options options)
         {
-
             // instantiate instruments and logger
             eventLogger = new EventLogger(options.BasePath, options.LogFileName);
             filterWheel = new NullFilterWheel();
@@ -50,24 +49,25 @@ namespace BevSpecRad
                     break;
             }
 
+            eventLogger.LogEvent($"Program: {GetAppNameAndVersion()}");
             eventLogger.LogEvent($"User comment: {options.UserComment}");
             LogSetupInfo();
-            DisplaySetupInfo();
 
             // TODO: read calibration data from file for standard lamp
             string fileName = "SN7-1108_FEL1000_2022.csv";
             var standardLampSpectrum = SpectralReader.ReadSpectrumFromCsv(System.IO.Path.Combine(options.BasePath, fileName));
             eventLogger.LogEvent($"Standard lamp calibration spectrum read from file: {fileName} ({standardLampSpectrum.GetMinimumWavelength()} nm - {standardLampSpectrum.GetMaximumWavelength()} nm)");
-            Console.WriteLine($"Standard lamp calibration spectrum read from file: {fileName} ({standardLampSpectrum.GetMinimumWavelength()} nm - {standardLampSpectrum.GetMaximumWavelength()} nm)");
 
             // ask user to set up everything
             Console.WriteLine("Testing shutter and filter wheel");
+            filterWheel.GoToPosition((int)FilterPosition.Closed);
             filterWheel.GoToPosition((int)FilterPosition.Blank); // Ensuring filter wheel is at position 5 also for manual filterwheels
             shutter.Close();
             shutter.Open();
             Console.WriteLine();
 
-            UIHelper.WriteMessageAndWait("==============================================================\n" +
+            UIHelper.WriteMessageAndWait(
+                "==============================================================\n" +
                 "Please set up the STANDARD LAMP and press any key to continue.\n" +
                 "==============================================================\n");
 
@@ -113,23 +113,18 @@ namespace BevSpecRad
                 filterWheel.GoToPosition((int)FilterPosition.FilterA);
                 intTimeA = spectro.GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter A: {intTimeA} s");
-                Console.WriteLine($"Optimal integration time for filter A: {intTimeA} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterB);
                 intTimeB = spectro.GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter B: {intTimeB} s");
-                Console.WriteLine($"Optimal integration time for filter B: {intTimeB} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterC);
                 intTimeC = spectro.GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter C: {intTimeC} s");
-                Console.WriteLine($"Optimal integration time for filter C: {intTimeC} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterD);
                 intTimeD = spectro.GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for filter D: {intTimeD} s");
-                Console.WriteLine($"Optimal integration time for filter D: {intTimeD} s");
                 filterWheel.GoToPosition((int)FilterPosition.Blank);
                 intTime0 = spectro.GetOptimalExposureTime();
                 eventLogger.LogEvent($"Optimal integration time for blank filter: {intTime0} s");
-                Console.WriteLine($"Optimal integration time for blank filter: {intTime0} s");
             }
             #endregion
 
@@ -188,6 +183,7 @@ namespace BevSpecRad
             var statControlD = specControlD.GetSignalStatistics();
             var statControl0 = specControl0.GetSignalStatistics();
 
+            Console.WriteLine();
             eventLogger.LogEvent($"Control Spectrum Stats Filter A: {statControlA.AverageValue:F6} +- {statControlA.StandardDeviation:F6}");
             eventLogger.LogEvent($"Control Spectrum Stats Filter B: {statControlB.AverageValue:F6} +- {statControlB.StandardDeviation:F6}");
             eventLogger.LogEvent($"Control Spectrum Stats Filter C: {statControlC.AverageValue:F6} +- {statControlC.StandardDeviation:F6}");
@@ -196,7 +192,9 @@ namespace BevSpecRad
 
             #endregion
 
-            #region Calculate some stuff 
+            #region Calculate some stuff
+            Console.WriteLine("Evaluating signal ratio ...");
+
             // Quotient spectra DUT/STD per filter (after dark subtraction)
             var ratioA = SpecMath.Ratio(specDutA, specStdA);
             var ratioB = SpecMath.Ratio(specDutB, specStdB);
@@ -224,16 +222,23 @@ namespace BevSpecRad
             maskedRatioD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "4_maskedRatioD.csv");
 
             // Sum all masked ratio spectra
-            var correctedLampRatio = SpecMath.Add(maskedRatioA, maskedRatioB, maskedRatioC, maskedRatioD);
-            correctedLampRatio.SaveSpectrumAsCsv(eventLogger.LogDirectory, "5_correctedLampRatio.csv");
+            var combinedRatio = SpecMath.Add(maskedRatioA, maskedRatioB, maskedRatioC, maskedRatioD);
+            combinedRatio.SaveSpectrumAsCsv(eventLogger.LogDirectory, "5_combinedRatio.csv");
 
-            var correctedLampRatioResampled = correctedLampRatio.ResampleSpectrum(350, 700, 1);
-            var simpleLampRatioResampled = ratio0.ResampleSpectrum(350, 700, 1);
-            var standardLampResampled = standardLampSpectrum.ResampleSpectrum(350, 700, 1);
+            eventLogger.LogEvent("Signal ratio evaluation done.");
+
+            double fromWl = 350;
+            double toWl = 700;
+            double stepWl = 1;
+
+            eventLogger.LogEvent($"Resampling and final calibration ({fromWl} - {toWl} @ {stepWl}) nm");
+            var correctedLampRatioResampled = combinedRatio.ResampleSpectrum(fromWl, toWl, stepWl);
+            var simpleLampRatioResampled = ratio0.ResampleSpectrum(fromWl, toWl, stepWl);
+            var standardLampResampled = standardLampSpectrum.ResampleSpectrum(fromWl, toWl, stepWl);
             var calibratedSpectrumCorrected = SpecMath.Multiply(correctedLampRatioResampled, standardLampResampled);
-            correctedLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "5_correctedLampRatio_resampled.csv");
-            simpleLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "5_simpleLampRatio_resampled.csv");
-            calibratedSpectrumCorrected.SaveSpectrumAsCsv(eventLogger.LogDirectory, "5_calibratedSpectrum_corrected.csv");
+            correctedLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_correctedLampRatio_resampled.csv");
+            simpleLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_simpleLampRatio_resampled.csv");
+            calibratedSpectrumCorrected.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_calibratedSpectrum_corrected.csv");
             standardLampResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_standardLamp_resampled.csv");
             #endregion
 
