@@ -10,12 +10,20 @@ namespace BevSpecRad
     {
         public static void WriteMessageAndWait(string message)
         {
+            while (Console.KeyAvailable) // Check if any key is pressed
+            {
+                Console.ReadKey(true); // Read and ignore the key
+            }
             Console.WriteLine(message);
             Console.ReadKey(true); // true = do not display the key pressed
         }
 
         public static bool SkipAction(string message)
         {
+            while (Console.KeyAvailable) // Check if any key is pressed
+            {
+                Console.ReadKey(true); // Read and ignore the key
+            }
             Console.WriteLine($"Press any key to {message} - 's' to skip.");
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
             return keyInfo.Key == ConsoleKey.S;
