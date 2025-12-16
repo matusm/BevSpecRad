@@ -51,6 +51,9 @@
     <Reference Include="Bev.Instruments.ArraySpectrometer.Domain">
       <HintPath>..\..\Bev.Instruments.ArraySpectrometer.Domain\Bev.Instruments.ArraySpectrometer.Domain\bin\Release\Bev.Instruments.ArraySpectrometer.Domain.dll</HintPath>
     </Reference>
+    <Reference Include="Bev.Instruments.OceanOptics.Usb2000">
+      <HintPath>..\..\Bev.Instruments.OceanOptics.Usb2000\Bev.Instruments.OceanOptics.Usb2000\bin\Release\Bev.Instruments.OceanOptics.Usb2000.dll</HintPath>
+    </Reference>
     <Reference Include="Bev.Instruments.Thorlabs.Ccs, Version=1.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Bev.Instruments.Thorlabs.Ccs\Bev.Instruments.Thorlabs.Ccs\bin\Release\Bev.Instruments.Thorlabs.Ccs.dll</HintPath>

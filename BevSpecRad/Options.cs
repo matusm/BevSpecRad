@@ -22,12 +22,11 @@ namespace BevSpecRad
         [Option("logfile", Default = @"BevSpecRadLog.txt", Required = false, HelpText = "File name for logging.")]
         public string LogFileName { get; set; }
 
-        [Option('s', "spectrometer", Default = 1, Required = false, HelpText = "Spectrometer type (see doc for usage).")]
+        [Option('s', "spectrometer", Default = 3, Required = false, HelpText = "Spectrometer type (see doc for usage).")]
         public int SpecType { get; set; }
         // 1: Thorlabs CCT
         // 2: Thorlabs CCS
-        // 3: USB2000VIS
-        // 4: USB2000UV
+        // 3: USB2000
 
         [Value(0, MetaName = "InputPath", Required = false, HelpText = "Input filename including path")]
         public string InputPath { get; set; }

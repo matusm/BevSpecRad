@@ -8,6 +8,7 @@ using At.Matus.OpticalSpectrumLib;
 using System;
 using Bev.Instruments.Thorlabs.Ccs;
 using Bev.Instruments.ArraySpectrometer.Domain;
+using Bev.Instruments.OceanOptics.Usb2000;
 
 namespace BevSpecRad
 {
@@ -43,6 +44,10 @@ namespace BevSpecRad
                     break;
                 case 2: // CCS
                     spectro = new ThorlabsCcs(ProductID.CCS100, "M00928408");
+                    shutter = new FilterWheelShutter(filterWheel, (int)FilterPosition.Closed);
+                    break;
+                case 3: // USB2000
+                    spectro = new OceanOpticsUsb2000();
                     shutter = new FilterWheelShutter(filterWheel, (int)FilterPosition.Closed);
                     break;
                 default:
