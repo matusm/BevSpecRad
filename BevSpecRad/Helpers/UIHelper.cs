@@ -31,7 +31,7 @@ namespace BevSpecRad
 
         public static void DisplaySpectrometerInfo(IArraySpectrometer spectro)
         {
-            Console.Write(FormatSpectrometerInfo(spectro)); 
+            Console.Write(FormatSpectrometerInfo(spectro));
         }
 
         public static string FormatSpectrometerInfo(IArraySpectrometer spectro)
@@ -43,8 +43,10 @@ namespace BevSpecRad
             sb.AppendLine($"Firmware Revision:        {spectro.InstrumentFirmwareVersion}");
             sb.AppendLine($"Min Wavelength:           {spectro.MinimumWavelength:F2} nm");
             sb.AppendLine($"Max Wavelength:           {spectro.MaximumWavelength:F2} nm");
+            sb.AppendLine($"Min Integration Time:     {spectro.MinimumIntegrationTime} s");
+            sb.AppendLine($"Max Integration Time:     {spectro.MaximumIntegrationTime} s");
             sb.AppendLine($"Pixel Number:             {spectro.Wavelengths.Length}");
-            sb.AppendLine($"Integration Time:         {spectro.GetIntegrationTime()} s");
+            sb.AppendLine($"Set Integration Time:     {spectro.GetIntegrationTime()} s");
             return sb.ToString();
         }
 

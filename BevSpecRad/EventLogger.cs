@@ -6,7 +6,7 @@ namespace BevSpecRad
     public class EventLogger
     {
         private StreamWriter logFile;
-        
+
         public string LogDirectory { get; }
 
         public EventLogger(string baseDirectory, string logFileName)

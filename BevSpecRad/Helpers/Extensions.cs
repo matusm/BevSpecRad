@@ -1,5 +1,4 @@
 ﻿using At.Matus.OpticalSpectrumLib;
-using At.Matus.StatisticPod;
 using System.IO;
 
 namespace BevSpecRad.Helpers

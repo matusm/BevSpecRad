@@ -1,14 +1,16 @@
-﻿using Bev.Instruments.ArraySpectrometer.Abstractions;
+﻿using At.Matus.OpticalSpectrumLib;
+using Bev.Instruments.ArraySpectrometer.Abstractions;
+using Bev.Instruments.ArraySpectrometer.Domain;
+using Bev.Instruments.OceanOptics.Usb2000;
+using Bev.Instruments.Thorlabs.Ccs;
 using Bev.Instruments.Thorlabs.Ctt;
 using Bev.Instruments.Thorlabs.FW;
 using BevSpecRad.Abstractions;
 using BevSpecRad.Domain;
 using BevSpecRad.Helpers;
-using At.Matus.OpticalSpectrumLib;
 using System;
 using Bev.Instruments.Thorlabs.Ccs;
 using Bev.Instruments.ArraySpectrometer.Domain;
-using Bev.Instruments.OceanOptics.Usb2000;
 
 namespace BevSpecRad
 {
@@ -34,8 +36,8 @@ namespace BevSpecRad
         {
             // instantiate instruments and logger
             eventLogger = new EventLogger(options.BasePath, options.LogFileName);
-            filterWheel = new NullFilterWheel();
-            //filterWheel = new MotorFilterWheel(options.FwPort);
+            //filterWheel = new NullFilterWheel();
+            filterWheel = new MotorFilterWheel(options.FwPort);
             switch (options.SpecType)
             {
                 case 1: // CCT
@@ -44,10 +46,6 @@ namespace BevSpecRad
                     break;
                 case 2: // CCS
                     spectro = new ThorlabsCcs(ProductID.CCS100, "M00928408");
-                    shutter = new FilterWheelShutter(filterWheel, (int)FilterPosition.Closed);
-                    break;
-                case 3: // USB2000
-                    spectro = new OceanOpticsUsb2000();
                     shutter = new FilterWheelShutter(filterWheel, (int)FilterPosition.Closed);
                     break;
                 default:
@@ -82,7 +80,7 @@ namespace BevSpecRad
             double intTimeB = options.IntTime;
             double intTimeC = options.IntTime;
             double intTimeD = options.IntTime;
-            double intTime0 = options.IntTime   ;
+            double intTime0 = options.IntTime;
             // spectra for standard lamp
             IOpticalSpectrum specStdA;
             IOpticalSpectrum specStdB;
@@ -115,20 +113,21 @@ namespace BevSpecRad
             }
             else
             {
+                bool debug = true;
                 filterWheel.GoToPosition((int)FilterPosition.FilterA);
-                intTimeA = spectro.GetOptimalExposureTime();
+                intTimeA = spectro.GetOptimalExposureTime(debug);
                 eventLogger.LogEvent($"Optimal integration time for filter A: {intTimeA} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterB);
-                intTimeB = spectro.GetOptimalExposureTime();
+                intTimeB = spectro.GetOptimalExposureTime(debug);
                 eventLogger.LogEvent($"Optimal integration time for filter B: {intTimeB} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterC);
-                intTimeC = spectro.GetOptimalExposureTime();
+                intTimeC = spectro.GetOptimalExposureTime(debug);
                 eventLogger.LogEvent($"Optimal integration time for filter C: {intTimeC} s");
                 filterWheel.GoToPosition((int)FilterPosition.FilterD);
-                intTimeD = spectro.GetOptimalExposureTime();
+                intTimeD = spectro.GetOptimalExposureTime(debug);
                 eventLogger.LogEvent($"Optimal integration time for filter D: {intTimeD} s");
                 filterWheel.GoToPosition((int)FilterPosition.Blank);
-                intTime0 = spectro.GetOptimalExposureTime();
+                intTime0 = spectro.GetOptimalExposureTime(debug);
                 eventLogger.LogEvent($"Optimal integration time for blank filter: {intTime0} s");
             }
             #endregion
