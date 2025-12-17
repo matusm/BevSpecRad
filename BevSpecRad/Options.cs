@@ -28,7 +28,7 @@ namespace BevSpecRad
         // 2: Thorlabs CCS
         // 3: USB2000
 
-        [Value(0, MetaName = "InputPath", Required = false, HelpText = "Input filename including path")]
+        [Value(0, MetaName = "InputPath", Required = false, HelpText = "Standard lamp calibration filename")]
         public string InputPath { get; set; }
 
         [Value(1, MetaName = "OutputPath", Required = false, HelpText = "Result filename including path")]

@@ -9,8 +9,6 @@ using BevSpecRad.Abstractions;
 using BevSpecRad.Domain;
 using BevSpecRad.Helpers;
 using System;
-using Bev.Instruments.Thorlabs.Ccs;
-using Bev.Instruments.ArraySpectrometer.Domain;
 
 namespace BevSpecRad
 {
@@ -36,8 +34,8 @@ namespace BevSpecRad
         {
             // instantiate instruments and logger
             eventLogger = new EventLogger(options.BasePath, options.LogFileName);
-            //filterWheel = new NullFilterWheel();
-            filterWheel = new MotorFilterWheel(options.FwPort);
+            filterWheel = new NullFilterWheel();
+            //filterWheel = new MotorFilterWheel(options.FwPort);
             switch (options.SpecType)
             {
                 case 1: // CCT
@@ -48,6 +46,10 @@ namespace BevSpecRad
                     spectro = new ThorlabsCcs(ProductID.CCS100, "M00928408");
                     shutter = new FilterWheelShutter(filterWheel, (int)FilterPosition.Closed);
                     break;
+                case 3: // Ocean USB2000
+                    spectro = new OceanOpticsUsb2000();
+                    shutter = new FilterWheelShutter(filterWheel, (int)FilterPosition.Closed);
+                    break;
                 default:
                     break;
             }
@@ -56,9 +58,12 @@ namespace BevSpecRad
             eventLogger.LogEvent($"User comment: {options.UserComment}");
             LogSetupInfo();
 
-            // TODO: read calibration data from file for standard lamp
+            // read calibration data from file for standard lamp
+            // file must be in the base path
             string fileName = "SN7-1108_FEL1000_2022.csv";
-            var standardLampSpectrum = SpectralReader.ReadSpectrumFromCsv(System.IO.Path.Combine(options.BasePath, fileName));
+            fileName = options.InputPath ?? fileName;
+            var inputFilePath = System.IO.Path.Combine(options.BasePath, fileName);
+            var standardLampSpectrum = SpectralReader.ReadSpectrumFromCsv(inputFilePath);
             eventLogger.LogEvent($"Standard lamp calibration spectrum read from file: {fileName} ({standardLampSpectrum.GetMinimumWavelength()} nm - {standardLampSpectrum.GetMaximumWavelength()} nm)");
 
             // ask user to set up everything
