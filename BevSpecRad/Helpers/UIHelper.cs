@@ -1,6 +1,6 @@
 ﻿using Bev.Instruments.ArraySpectrometer.Abstractions;
+using Bev.Instruments.OpticalShutterLib.Abstractions;
 using Bev.Instruments.Thorlabs.FW;
-using BevSpecRad.Abstractions;
 using System;
 using System.Text;
 

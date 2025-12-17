@@ -2,11 +2,11 @@
 using Bev.Instruments.ArraySpectrometer.Abstractions;
 using Bev.Instruments.ArraySpectrometer.Domain;
 using Bev.Instruments.OceanOptics.Usb2000;
+using Bev.Instruments.OpticalShutterLib.Abstractions;
+using Bev.Instruments.OpticalShutterLib.Domain;
 using Bev.Instruments.Thorlabs.Ccs;
 using Bev.Instruments.Thorlabs.Ctt;
 using Bev.Instruments.Thorlabs.FW;
-using BevSpecRad.Abstractions;
-using BevSpecRad.Domain;
 using BevSpecRad.Helpers;
 using System;
 

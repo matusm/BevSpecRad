@@ -54,6 +54,9 @@
     <Reference Include="Bev.Instruments.OceanOptics.Usb2000">
       <HintPath>..\..\Bev.Instruments.OceanOptics.Usb2000\Bev.Instruments.OceanOptics.Usb2000\bin\Release\Bev.Instruments.OceanOptics.Usb2000.dll</HintPath>
     </Reference>
+    <Reference Include="Bev.Instruments.OpticalShutterLib">
+      <HintPath>..\..\Bev.Instruments.OpticalShutterLib\Bev.Instruments.OpticalShutterLib\bin\Release\Bev.Instruments.OpticalShutterLib.dll</HintPath>
+    </Reference>
     <Reference Include="Bev.Instruments.Thorlabs.Ccs, Version=1.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Bev.Instruments.Thorlabs.Ccs\Bev.Instruments.Thorlabs.Ccs\bin\Release\Bev.Instruments.Thorlabs.Ccs.dll</HintPath>
@@ -77,11 +80,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstractions\IShutter.cs" />
-    <Compile Include="Domain\CctShutter.cs" />
-    <Compile Include="Domain\FilterWheelShutter.cs" />
-    <Compile Include="Domain\ManualShutter.cs" />
-    <Compile Include="Domain\NullShutter.cs" />
     <Compile Include="EventLogger.cs" />
     <Compile Include="Helpers\ConsoleProgessBar.cs" />
     <Compile Include="Helpers\Extensions.cs" />
