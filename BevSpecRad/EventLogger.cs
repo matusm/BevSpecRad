@@ -5,21 +5,21 @@ namespace BevSpecRad
 {
     public class EventLogger
     {
-        private StreamWriter logFile;
+        private readonly StreamWriter _logFile;
 
         public string LogDirectory { get; }
 
         public EventLogger(string baseDirectory, string logFileName)
         {
             LogDirectory = CreateTimestampedSubdirectory(baseDirectory);
-            logFile = new StreamWriter(Path.Combine(LogDirectory, logFileName));
-            logFile.AutoFlush = true;
+            _logFile = new StreamWriter(Path.Combine(LogDirectory, logFileName));
+            _logFile.AutoFlush = true;
             LogEvent($"Log started. Filename: {logFileName}");
         }
 
         public void Write(string message)
         {
-            logFile.Write(message);
+            _logFile.Write(message);
             Console.Write(message);
         }
 
@@ -27,27 +27,27 @@ namespace BevSpecRad
         public void LogEvent(string message)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            logFile.WriteLine($"[{timestamp}] {message}");
+            _logFile.WriteLine($"[{timestamp}] {message}");
             Console.WriteLine($"{message}");
         }
 
         /// Writes a message to both the log file and the console without a timestamp.
         public void WriteLine(string message)
         {
-            logFile.WriteLine(message);
+            _logFile.WriteLine(message);
             Console.WriteLine(message);
         }
 
         public void WriteLine()
         {
-            logFile.WriteLine();
+            _logFile.WriteLine();
             Console.WriteLine();
         }
 
         public void Close()
         {
             LogEvent("Log closed.");
-            logFile?.Close();
+            _logFile?.Close();
         }
 
         // Creates a subdirectory under the specified basePath.

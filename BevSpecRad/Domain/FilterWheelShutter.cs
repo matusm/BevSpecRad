@@ -5,7 +5,7 @@ namespace BevSpecRad.Domain
 {
     public class FilterWheelShutter : IShutter
     {
-        private IFilterWheel _filterWheel;
+        private readonly IFilterWheel _filterWheel;
         private readonly int _blockPos;
         private int _openPos;
         private bool _isOpen = true;

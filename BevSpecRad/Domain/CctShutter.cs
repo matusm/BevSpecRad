@@ -5,20 +5,20 @@ namespace BevSpecRad.Domain
 {
     public class CctShutter : IShutter
     {
-        private readonly ThorlabsCct spectro;
+        private readonly ThorlabsCct _spectro;
 
         public string Name => "Thorlabs CCT Shutter (automatic)";
 
-        public CctShutter(ThorlabsCct spectro) { this.spectro = spectro; }
+        public CctShutter(ThorlabsCct spectro) { _spectro = spectro; }
 
         public void Open()
         {
-            spectro.OpenShutter();
+            _spectro.OpenShutter();
         }
 
         public void Close()
         {
-            spectro.CloseShutter();
+            _spectro.CloseShutter();
         }
     }
 }

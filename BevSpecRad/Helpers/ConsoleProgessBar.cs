@@ -4,13 +4,13 @@ namespace BevSpecRad.Helpers
 {
     public class ConsoleProgressBar
     {
-        private readonly int width;
-        private readonly string left = "[";
-        private readonly string right = "]";
+        private readonly int _width;
+        private readonly string _left = "[";
+        private readonly string _right = "]";
 
         public ConsoleProgressBar(int width = 68)
         {
-            this.width = Math.Max(10, width);
+            _width = Math.Max(10, width);
         }
 
         public void Report(int current, int total)
@@ -27,13 +27,13 @@ namespace BevSpecRad.Helpers
         public void Report(double percent) // percent: 0.0..100.0
         {
             percent = Math_Clamp(percent, 0.0, 100.0);
-            int filled = (int)Math.Round((percent / 100.0) * width);
+            int filled = (int)Math.Round((percent / 100.0) * _width);
             string hashes = new string('#', filled);
-            string spaces = new string(' ', width - filled);
+            string spaces = new string(' ', _width - filled);
             string pctText = $"{percent,6:0.0} %"; // formats like " 100.0%"
 
             // Build bar similar to: [####################..........]  42.3%
-            string bar = $"{left}{hashes}{spaces}{right} {pctText}";
+            string bar = $"{_left}{hashes}{spaces}{_right} {pctText}";
 
             Console.Write("\r" + bar);
             if (percent >= 100.0)
