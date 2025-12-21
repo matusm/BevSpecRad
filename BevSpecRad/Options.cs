@@ -19,10 +19,10 @@ namespace BevSpecRad
         [Option("basepath", Default = @"C:\temp\BevSpecRad", Required = false, HelpText = "Base path for result directories.")]
         public string BasePath { get; set; }
 
-        [Option("logfile", Default = @"BevSpecRadLog.txt", Required = false, HelpText = "File name for logging.")]
+        [Option("logfile", Default = @"BevSpecIrradLog.txt", Required = false, HelpText = "File name for logging.")]
         public string LogFileName { get; set; }
 
-        [Option('s', "spectrometer", Default = 3, Required = false, HelpText = "Spectrometer type (see doc for usage).")]
+        [Option('s', "spectrometer", Default = 1, Required = false, HelpText = "Spectrometer type (see doc for usage).")]
         public int SpecType { get; set; }
         // 1: Thorlabs CCT
         // 2: Thorlabs CCS

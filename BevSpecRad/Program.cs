@@ -245,19 +245,18 @@ namespace BevSpecRad
 
             eventLogger.LogEvent("Signal ratio evaluation done.");
 
-            double fromWl = 350;
-            double toWl = 700;
-            double stepWl = 1;
+            double[] targetWavelengths = standardLampSpectrum.Wavelengths;
 
-            eventLogger.LogEvent($"Resampling and final calibration ({fromWl} - {toWl} @ {stepWl}) nm");
-            var correctedLampRatioResampled = combinedRatio.ResampleSpectrum(fromWl, toWl, stepWl);
-            var simpleLampRatioResampled = ratio0.ResampleSpectrum(fromWl, toWl, stepWl);
-            var standardLampResampled = standardLampSpectrum.ResampleSpectrum(fromWl, toWl, stepWl);
-            var calibratedSpectrumCorrected = SpecMath.Multiply(correctedLampRatioResampled, standardLampResampled);
+            eventLogger.LogEvent($"Resampling and final calibration ({targetWavelengths[0]} - {targetWavelengths[targetWavelengths.Length-1]}) nm");
+            var correctedLampRatioResampled = combinedRatio.ResampleSpectrum(targetWavelengths);
             correctedLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_correctedLampRatio_resampled.csv");
+            var simpleLampRatioResampled = ratio0.ResampleSpectrum(targetWavelengths);
             simpleLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_simpleLampRatio_resampled.csv");
-            calibratedSpectrumCorrected.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_calibratedSpectrum_corrected.csv");
-            standardLampResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_standardLamp_resampled.csv");
+            //var standardLampResampled = standardLampSpectrum.ResampleSpectrum(targetWavelengths);
+            //TODO: check if both spectra have same wavelength range and resolution
+            var calibratedSpectrumCorrected = SpecMath.Multiply(correctedLampRatioResampled, standardLampSpectrum);
+            calibratedSpectrumCorrected.SaveSpectrumAsCsv(eventLogger.LogDirectory, "7_calibratedSpectrum_corrected.csv");
+            //standardLampResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_standardLamp_resampled.csv");
             #endregion
 
             Console.WriteLine();
