@@ -28,6 +28,9 @@ namespace BevSpecRad
         // 2: Thorlabs CCS
         // 3: USB2000
 
+        [Option("control", Default = false, Required = false, HelpText = "Perform control measurement after calibration")]
+        public bool Control { get; set; }
+
         [Value(0, MetaName = "InputPath", Required = false, HelpText = "Standard lamp calibration filename")]
         public string InputPath { get; set; }
 
