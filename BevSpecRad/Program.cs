@@ -187,25 +187,29 @@ namespace BevSpecRad
                 specControlD = PerformABBAControlMeasurement(intTimeD, options.Nsamples);
                 specControl0 = PerformABBAControlMeasurement(intTime0, options.Nsamples);
 
-            specControlA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecA.csv");
-            specControlB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecB.csv");
-            specControlC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecC.csv");
-            specControlD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecD.csv");
-            specControl0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpec0.csv");
+                specControlA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecA.csv");
+                specControlB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecB.csv");
+                specControlC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecC.csv");
+                specControlD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecD.csv");
+                specControl0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpec0.csv");
 
-            var statControlA = specControlA.GetSignalStatistics();
-            var statControlB = specControlB.GetSignalStatistics();
-            var statControlC = specControlC.GetSignalStatistics();
-            var statControlD = specControlD.GetSignalStatistics();
-            var statControl0 = specControl0.GetSignalStatistics();
+                var statControlA = specControlA.GetSignalStatistics();
+                var statControlB = specControlB.GetSignalStatistics();
+                var statControlC = specControlC.GetSignalStatistics();
+                var statControlD = specControlD.GetSignalStatistics();
+                var statControl0 = specControl0.GetSignalStatistics();
 
-            Console.WriteLine();
-            eventLogger.LogEvent($"Control Spectrum Stats Filter A: {statControlA.AverageValue:F6} +- {statControlA.StandardDeviation:F6}");
-            eventLogger.LogEvent($"Control Spectrum Stats Filter B: {statControlB.AverageValue:F6} +- {statControlB.StandardDeviation:F6}");
-            eventLogger.LogEvent($"Control Spectrum Stats Filter C: {statControlC.AverageValue:F6} +- {statControlC.StandardDeviation:F6}");
-            eventLogger.LogEvent($"Control Spectrum Stats Filter D: {statControlD.AverageValue:F6} +- {statControlD.StandardDeviation:F6}");
-            eventLogger.LogEvent($"Control Spectrum Stats Filter 0: {statControl0.AverageValue:F6} +- {statControl0.StandardDeviation:F6}");
-
+                Console.WriteLine();
+                eventLogger.LogEvent($"Control Spectrum Stats Filter A: {statControlA.AverageValue:F6} +- {statControlA.StandardDeviation:F6}");
+                eventLogger.LogEvent($"Control Spectrum Stats Filter B: {statControlB.AverageValue:F6} +- {statControlB.StandardDeviation:F6}");
+                eventLogger.LogEvent($"Control Spectrum Stats Filter C: {statControlC.AverageValue:F6} +- {statControlC.StandardDeviation:F6}");
+                eventLogger.LogEvent($"Control Spectrum Stats Filter D: {statControlD.AverageValue:F6} +- {statControlD.StandardDeviation:F6}");
+                eventLogger.LogEvent($"Control Spectrum Stats Filter 0: {statControl0.AverageValue:F6} +- {statControl0.StandardDeviation:F6}");
+            }
+            else
+            {
+                eventLogger.LogEvent("Skipping control (dark) spectrum acquisition as per user request.");
+            }
             #endregion
 
             #region Calculate some stuff

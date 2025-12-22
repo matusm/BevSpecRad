@@ -13,10 +13,10 @@ namespace BevSpecRad
         [Option("comment", Default = "---", Required = false, HelpText = "User supplied comment text.")]
         public string UserComment { get; set; }
 
-        [Option("fwport", Default = "COM1", Required = false, HelpText = "Filter wheel serial port.")]
+        [Option("fwport", Default = "COM3", Required = false, HelpText = "Filter wheel serial port.")] // photometry lab, COM1 for development computer
         public string FwPort { get; set; }
 
-        [Option("basepath", Default = @"C:\temp\BevSpecRad", Required = false, HelpText = "Base path for result directories.")]
+        [Option("basepath", Default = @"C:\temp\BevSpecIrrad", Required = false, HelpText = "Base path for result directories.")]
         public string BasePath { get; set; }
 
         [Option("logfile", Default = @"BevSpecIrradLog.txt", Required = false, HelpText = "File name for logging.")]
