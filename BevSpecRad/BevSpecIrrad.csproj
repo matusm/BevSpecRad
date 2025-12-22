@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{ECDCB478-74CF-4768-A787-EED0D0990075}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>BevSpecRad</RootNamespace>
-    <AssemblyName>BevSpecRad</AssemblyName>
+    <RootNamespace>BevSpecIrrad</RootNamespace>
+    <AssemblyName>BevSpecIrrad</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

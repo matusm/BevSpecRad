@@ -140,6 +140,9 @@ namespace BevSpecRad
             #endregion
 
             #region Measure Standard Lamp
+            UIHelper.WriteMessageAndWait("\n========================================================================\n" +
+                "Starting measurements on STANDARD LAMP. Please ensure lamp is warmed up.\n" +
+                "========================================================================");
             // Now perform measurements on standard lamp
             specStdA = PerformABBAMeasurement((int)FilterPosition.FilterA, intTimeA, options.Nsamples);
             specStdB = PerformABBAMeasurement((int)FilterPosition.FilterB, intTimeB, options.Nsamples);
@@ -174,32 +177,34 @@ namespace BevSpecRad
             #endregion
 
             #region Take Control Spectra
-            // Now take control spectra (dark spectra) for all integration times
-            //Console.WriteLine("\nMeasurements on lamps done. Lamp can be shut down. Taking control (dark) spectra.");
-            //specControlA = PerformABBAControlMeasurement(intTimeA, options.Nsamples);
-            //specControlB = PerformABBAControlMeasurement(intTimeB, options.Nsamples);
-            //specControlC = PerformABBAControlMeasurement(intTimeC, options.Nsamples);
-            //specControlD = PerformABBAControlMeasurement(intTimeD, options.Nsamples);
-            //specControl0 = PerformABBAControlMeasurement(intTime0, options.Nsamples);
+            if (options.Control)
+            {
+                // Now take control spectra (dark spectra) for all integration times
+                Console.WriteLine("\nMeasurements on lamps done. Lamp can be shut down. Taking control (dark) spectra.");
+                specControlA = PerformABBAControlMeasurement(intTimeA, options.Nsamples);
+                specControlB = PerformABBAControlMeasurement(intTimeB, options.Nsamples);
+                specControlC = PerformABBAControlMeasurement(intTimeC, options.Nsamples);
+                specControlD = PerformABBAControlMeasurement(intTimeD, options.Nsamples);
+                specControl0 = PerformABBAControlMeasurement(intTime0, options.Nsamples);
 
-            //specControlA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecA.csv");
-            //specControlB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecB.csv");
-            //specControlC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecC.csv");
-            //specControlD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecD.csv");
-            //specControl0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpec0.csv");
+            specControlA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecA.csv");
+            specControlB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecB.csv");
+            specControlC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecC.csv");
+            specControlD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecD.csv");
+            specControl0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpec0.csv");
 
-            //var statControlA = specControlA.GetSignalStatistics();
-            //var statControlB = specControlB.GetSignalStatistics();
-            //var statControlC = specControlC.GetSignalStatistics();
-            //var statControlD = specControlD.GetSignalStatistics();
-            //var statControl0 = specControl0.GetSignalStatistics();
+            var statControlA = specControlA.GetSignalStatistics();
+            var statControlB = specControlB.GetSignalStatistics();
+            var statControlC = specControlC.GetSignalStatistics();
+            var statControlD = specControlD.GetSignalStatistics();
+            var statControl0 = specControl0.GetSignalStatistics();
 
-            //Console.WriteLine();
-            //eventLogger.LogEvent($"Control Spectrum Stats Filter A: {statControlA.AverageValue:F6} +- {statControlA.StandardDeviation:F6}");
-            //eventLogger.LogEvent($"Control Spectrum Stats Filter B: {statControlB.AverageValue:F6} +- {statControlB.StandardDeviation:F6}");
-            //eventLogger.LogEvent($"Control Spectrum Stats Filter C: {statControlC.AverageValue:F6} +- {statControlC.StandardDeviation:F6}");
-            //eventLogger.LogEvent($"Control Spectrum Stats Filter D: {statControlD.AverageValue:F6} +- {statControlD.StandardDeviation:F6}");
-            //eventLogger.LogEvent($"Control Spectrum Stats Filter 0: {statControl0.AverageValue:F6} +- {statControl0.StandardDeviation:F6}");
+            Console.WriteLine();
+            eventLogger.LogEvent($"Control Spectrum Stats Filter A: {statControlA.AverageValue:F6} +- {statControlA.StandardDeviation:F6}");
+            eventLogger.LogEvent($"Control Spectrum Stats Filter B: {statControlB.AverageValue:F6} +- {statControlB.StandardDeviation:F6}");
+            eventLogger.LogEvent($"Control Spectrum Stats Filter C: {statControlC.AverageValue:F6} +- {statControlC.StandardDeviation:F6}");
+            eventLogger.LogEvent($"Control Spectrum Stats Filter D: {statControlD.AverageValue:F6} +- {statControlD.StandardDeviation:F6}");
+            eventLogger.LogEvent($"Control Spectrum Stats Filter 0: {statControl0.AverageValue:F6} +- {statControl0.StandardDeviation:F6}");
 
             #endregion
 
@@ -238,19 +243,18 @@ namespace BevSpecRad
 
             eventLogger.LogEvent("Signal ratio evaluation done.");
 
-            double fromWl = 350;
-            double toWl = 700;
-            double stepWl = 1;
+            double[] targetWavelengths = standardLampSpectrum.Wavelengths;
 
-            eventLogger.LogEvent($"Resampling and final calibration ({fromWl} - {toWl} @ {stepWl}) nm");
-            var correctedLampRatioResampled = combinedRatio.ResampleSpectrum(fromWl, toWl, stepWl);
-            var simpleLampRatioResampled = ratio0.ResampleSpectrum(fromWl, toWl, stepWl);
-            var standardLampResampled = standardLampSpectrum.ResampleSpectrum(fromWl, toWl, stepWl);
-            var calibratedSpectrumCorrected = SpecMath.Multiply(correctedLampRatioResampled, standardLampResampled);
+            eventLogger.LogEvent($"Resampling and final calibration ({targetWavelengths[0]} - {targetWavelengths[targetWavelengths.Length-1]}) nm");
+            var correctedLampRatioResampled = combinedRatio.ResampleSpectrum(targetWavelengths);
             correctedLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_correctedLampRatio_resampled.csv");
+            var simpleLampRatioResampled = ratio0.ResampleSpectrum(targetWavelengths);
             simpleLampRatioResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_simpleLampRatio_resampled.csv");
-            calibratedSpectrumCorrected.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_calibratedSpectrum_corrected.csv");
-            standardLampResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_standardLamp_resampled.csv");
+            //var standardLampResampled = standardLampSpectrum.ResampleSpectrum(targetWavelengths);
+            //TODO: check if both spectra have same wavelength range and resolution
+            var calibratedSpectrumCorrected = SpecMath.Multiply(correctedLampRatioResampled, standardLampSpectrum);
+            calibratedSpectrumCorrected.SaveSpectrumAsCsv(eventLogger.LogDirectory, "7_calibratedSpectrum_corrected.csv");
+            //standardLampResampled.SaveSpectrumAsCsv(eventLogger.LogDirectory, "6_standardLamp_resampled.csv");
             #endregion
 
             Console.WriteLine();
