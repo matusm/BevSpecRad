@@ -34,7 +34,8 @@ namespace BevSpecRad
         {
             // instantiate instruments and logger
             eventLogger = new EventLogger(options.BasePath, options.LogFileName);
-            filterWheel = new NullFilterWheel();
+            //filterWheel = new NullFilterWheel();
+            filterWheel = new ManualFilterWheel();
             //filterWheel = new MotorFilterWheel(options.FwPort);
             switch (options.SpecType)
             {
@@ -45,6 +46,7 @@ namespace BevSpecRad
                 case 2: // CCS
                     spectro = new ThorlabsCcs(ProductID.CCS100, "M00928408");
                     shutter = new FilterWheelShutter(filterWheel, (int)FilterPosition.Closed);
+                    shutter = new ManualShutter();
                     break;
                 case 3: // Ocean USB2000
                     spectro = new OceanOpticsUsb2000();
@@ -173,31 +175,31 @@ namespace BevSpecRad
 
             #region Take Control Spectra
             // Now take control spectra (dark spectra) for all integration times
-            Console.WriteLine("\nMeasurements on lamps done. Lamp can be shut down. Taking control (dark) spectra.");
-            specControlA = PerformABBAControlMeasurement(intTimeA, options.Nsamples);
-            specControlB = PerformABBAControlMeasurement(intTimeB, options.Nsamples);
-            specControlC = PerformABBAControlMeasurement(intTimeC, options.Nsamples);
-            specControlD = PerformABBAControlMeasurement(intTimeD, options.Nsamples);
-            specControl0 = PerformABBAControlMeasurement(intTime0, options.Nsamples);
+            //Console.WriteLine("\nMeasurements on lamps done. Lamp can be shut down. Taking control (dark) spectra.");
+            //specControlA = PerformABBAControlMeasurement(intTimeA, options.Nsamples);
+            //specControlB = PerformABBAControlMeasurement(intTimeB, options.Nsamples);
+            //specControlC = PerformABBAControlMeasurement(intTimeC, options.Nsamples);
+            //specControlD = PerformABBAControlMeasurement(intTimeD, options.Nsamples);
+            //specControl0 = PerformABBAControlMeasurement(intTime0, options.Nsamples);
 
-            specControlA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecA.csv");
-            specControlB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecB.csv");
-            specControlC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecC.csv");
-            specControlD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecD.csv");
-            specControl0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpec0.csv");
+            //specControlA.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecA.csv");
+            //specControlB.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecB.csv");
+            //specControlC.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecC.csv");
+            //specControlD.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpecD.csv");
+            //specControl0.SaveSpectrumAsCsv(eventLogger.LogDirectory, "3_ControlSpec0.csv");
 
-            var statControlA = specControlA.GetSignalStatistics();
-            var statControlB = specControlB.GetSignalStatistics();
-            var statControlC = specControlC.GetSignalStatistics();
-            var statControlD = specControlD.GetSignalStatistics();
-            var statControl0 = specControl0.GetSignalStatistics();
+            //var statControlA = specControlA.GetSignalStatistics();
+            //var statControlB = specControlB.GetSignalStatistics();
+            //var statControlC = specControlC.GetSignalStatistics();
+            //var statControlD = specControlD.GetSignalStatistics();
+            //var statControl0 = specControl0.GetSignalStatistics();
 
-            Console.WriteLine();
-            eventLogger.LogEvent($"Control Spectrum Stats Filter A: {statControlA.AverageValue:F6} +- {statControlA.StandardDeviation:F6}");
-            eventLogger.LogEvent($"Control Spectrum Stats Filter B: {statControlB.AverageValue:F6} +- {statControlB.StandardDeviation:F6}");
-            eventLogger.LogEvent($"Control Spectrum Stats Filter C: {statControlC.AverageValue:F6} +- {statControlC.StandardDeviation:F6}");
-            eventLogger.LogEvent($"Control Spectrum Stats Filter D: {statControlD.AverageValue:F6} +- {statControlD.StandardDeviation:F6}");
-            eventLogger.LogEvent($"Control Spectrum Stats Filter 0: {statControl0.AverageValue:F6} +- {statControl0.StandardDeviation:F6}");
+            //Console.WriteLine();
+            //eventLogger.LogEvent($"Control Spectrum Stats Filter A: {statControlA.AverageValue:F6} +- {statControlA.StandardDeviation:F6}");
+            //eventLogger.LogEvent($"Control Spectrum Stats Filter B: {statControlB.AverageValue:F6} +- {statControlB.StandardDeviation:F6}");
+            //eventLogger.LogEvent($"Control Spectrum Stats Filter C: {statControlC.AverageValue:F6} +- {statControlC.StandardDeviation:F6}");
+            //eventLogger.LogEvent($"Control Spectrum Stats Filter D: {statControlD.AverageValue:F6} +- {statControlD.StandardDeviation:F6}");
+            //eventLogger.LogEvent($"Control Spectrum Stats Filter 0: {statControl0.AverageValue:F6} +- {statControl0.StandardDeviation:F6}");
 
             #endregion
 
